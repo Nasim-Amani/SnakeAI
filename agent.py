@@ -3,6 +3,8 @@ import random
 import numpy as np
 from collections import deque
 from game import SnakeGameAI, Direction, Point  # Import the game environment
+from model import Linear_QNet , QTrainer
+from plot import plot
 
 # Constants for training
 MAX_MEMORY = 100_000  # Maximum memory storage for experience replay
@@ -13,10 +15,10 @@ class Agent:
     def __init__(self):
         self.n_games = 0  # Count of games played
         self.epsilon = 0  # Randomness factor for exploration vs exploitation
-        self.gamma = 0  # Discount factor for future rewards
+        self.gamma = 0.9  # Discount factor for future rewards
         self.memory = deque(maxlen=MAX_MEMORY)  # Stores past experiences, removes oldest if full
-        self.model = None  
-        self.trainer = None  
+        self.model = Linear_QNet(11, 256, 3)  
+        self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)  
 
     def get_state(self, game):
         """ Extracts the current game state and returns it as a NumPy array. """
@@ -104,13 +106,16 @@ class Agent:
             final_move[move] = 1  # Activate the chosen move
         else:  # Exploitation: Use the trained model to choose the best move
             state0 = torch.tensor(state, dtype=torch.float)  # Convert state to tensor
-            prediction = self.model.predict(state0)  # Get predictions from the neural network
+            prediction = self.model(state0)  # Get predictions from the neural network
             move = torch.argmax(prediction).item()  # Choose the move with the highest predicted value
             final_move[move] = 1  # Activate the best move
 
         return final_move  # Return the chosen move as a one-hot encoded list
 
 def train():
+    plot_scores=[]
+    plot_mean_scores=[]
+    total_score= 0
     """ Main function to train the AI by playing multiple games. """
     record = 0  # Keep track of the highest score
     agent = Agent()  # Create the AI agent
@@ -143,7 +148,24 @@ def train():
             if score > record:
                 record = score
                 # Save the trained model
-                # agent.model.save()  
+                agent.model.save()  
 
             # Print AI progress
             print('Game', agent.n_games, 'Score:', score, 'Record:', record)
+
+            plot_scores.append(score)
+            total_score += score
+            mean_score= total_score / agent.n_games
+            plot_mean_scores.append(mean_score)
+            plot(plot_scores , plot_mean_scores)
+
+
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    train()            
