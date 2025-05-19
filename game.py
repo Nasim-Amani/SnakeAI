@@ -8,7 +8,7 @@ import numpy as np  # 🧠 AI will use this for decision-making later.
 pygame.init()
 
 # 🖋️ Step 2: Define a font (for showing the score)
-font = pygame.font.Font('arial', 25)  # 🏆 This will help us display the score later!
+font = pygame.font.SysFont('arial', 25)  # 🏆 This will help us display the score later!
 
 # 🏹 Step 3: Create an Enum for Directions (for easy movement control)
 class Direction(Enum):
@@ -51,12 +51,12 @@ class SnakeGameAI:
             Point(self.head.x - BLOCK_SIZE, self.head.y),
             Point(self.head.x - (2 * BLOCK_SIZE), self.head.y)
         ]
-            '''
-            Start Position (snake facing right) → 🐍
-            +----+----+----+
-            |  S |  S |  H |  -> (RIGHT)
-            +----+----+----+
-            '''
+        '''
+        Start Position (snake facing right) → 🐍
+        +----+----+----+
+        |  S |  S |  H |  -> (RIGHT)
+        +----+----+----+
+        '''
         self.score = 0  #What should the initial direction be?
         self.food = None  
         self._place_food()  # 🍏 Place the first food on the screen!
@@ -126,108 +126,108 @@ class SnakeGameAI:
             return True  # 🎯 What happens if the snake bites itself?
 
         return False
-
-# 🎨 Step 11: Updating the UI - Making Everything Visible!
-def _update_ui(self):
-    """Draws the game elements on the screen (Snake, Food, and Score)"""
-
-    # 🖤 1️⃣ Clear the screen by filling it with black
-    # This removes the previous frame to prevent a "trailing" effect
-    self.display.fill(BLACK)  
-
-    # 🐍 2️⃣ Draw the Snake on the screen
-    for pt in self.snake:
-        # 🔹 Outer snake body (A blue rectangle)
-        pygame.draw.rect(self.display, BLUE1, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
         
-        # 🔹 Inner shading for a cool 3D effect (A smaller blue rectangle inside)
-        pygame.draw.rect(self.display, BLUE2, pygame.Rect(pt.x+4, pt.y+4, 12, 12))
+    # 🎨 Step 11: Updating the UI - Making Everything Visible!
+    def _update_ui(self):
+        """Draws the game elements on the screen (Snake, Food, and Score)"""
 
-    # 🍏 3️⃣ Draw the Food
-    # This creates a red square at the food's location
-    pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
+        # 🖤 1️⃣ Clear the screen by filling it with black
+        # This removes the previous frame to prevent a "trailing" effect
+        self.display.fill(BLACK)  
 
-    # 🏆 4️⃣ Display the Score
-    # 🎯 Render the text "Score: X" in white color
-    text = font.render("Score: " + str(self.score), True, WHITE)
-    
-    # 🎯 Place the text in the top-left corner of the screen
-    self.display.blit(text, [0, 0])
+        # 🐍 2️⃣ Draw the Snake on the screen
+        for pt in self.snake:
+            # 🔹 Outer snake body (A blue rectangle)
+            pygame.draw.rect(self.display, BLUE1, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
+            
+            # 🔹 Inner shading for a cool 3D effect (A smaller blue rectangle inside)
+            pygame.draw.rect(self.display, BLUE2, pygame.Rect(pt.x+4, pt.y+4, 12, 12))
 
-    # 🔄 5️⃣ Refresh the screen so all the new elements are visible
-    pygame.display.flip()
+        # 🍏 3️⃣ Draw the Food
+        # This creates a red square at the food's location
+        pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
 
-# 🐍 Step 12: Moving the Snake
-def _move(self, action):
-    """Moves the snake based on AI action.
-    
-    🕹️ AI can choose one of these 3 actions:
-    [1, 0, 0]  → Go straight 🚀 
-    [0, 1, 0]  → Turn right 🔄  
-    [0, 0, 1]  → Turn left 🔄  
-    """
-    
-    # 🔄 Define movement directions in a clockwise order
-    clock_wise = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
-    
-    ''' 🧭 Visual representation:
-            [RIGHT, DOWN, LEFT, UP]
-                 0      1     2    3
+        # 🏆 4️⃣ Display the Score
+        # 🎯 Render the text "Score: X" in white color
+        text = font.render("Score: " + str(self.score), True, WHITE)
+        
+        # 🎯 Place the text in the top-left corner of the screen
+        self.display.blit(text, [0, 0])
 
-                    UP (↑)          
-               LEFT (←)   (→) RIGHT 
-                  DOWN (↓)
-    '''
+        # 🔄 5️⃣ Refresh the screen so all the new elements are visible
+        pygame.display.flip()
 
-    # 🎯 Find the current direction of the snake
-    idx = clock_wise.index(self.direction)  
+    # 🐍 Step 12: Moving the Snake
+    def _move(self, action):
+        """Moves the snake based on AI action.
+        
+        🕹️ AI can choose one of these 3 actions:
+        [1, 0, 0]  → Go straight 🚀 
+        [0, 1, 0]  → Turn right 🔄  
+        [0, 0, 1]  → Turn left 🔄  
+        """
+        
+        # 🔄 Define movement directions in a clockwise order
+        clock_wise = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
+        
+        ''' 🧭 Visual representation:
+                [RIGHT, DOWN, LEFT, UP]
+                    0      1     2    3
 
-    # 🎮 AI's Decision: Does the snake turn or go straight?
-    if np.array_equal(action, [1, 0, 0]):  
-        # 🚀 AI says "Go straight!" (No change)
-        new_dir = clock_wise[idx]  
-
-    elif np.array_equal(action, [0, 1, 0]):  
-        # 🔄 AI says "Turn Right!"
-        next_idx = (idx + 1) % 4  # Move one step forward in clock_wise list
-        new_dir = clock_wise[next_idx]  
-
-        '''
-        🔀 Right Turn Mapping:
-        If facing RIGHT (0) → Turns to DOWN (1) ⬇️
-        If facing DOWN (1) → Turns to LEFT (2) ⬅️
-        If facing LEFT (2) → Turns to UP (3) ⬆️
-        If facing UP (3) → Turns to RIGHT (0) ➡️
+                        UP (↑)          
+                LEFT (←)   (→) RIGHT 
+                    DOWN (↓)
         '''
 
-    else:  # [0, 0, 1]
-        # 🔄 AI says "Turn Left!"
-        next_idx = (idx - 1) % 4  # Move one step backward in clock_wise list
-        new_dir = clock_wise[next_idx]  
+        # 🎯 Find the current direction of the snake
+        idx = clock_wise.index(self.direction)  
 
-        '''
-        🔀 Left Turn Mapping:
-        If facing RIGHT (0) → Turns to UP (3) ⬆️
-        If facing UP (3) → Turns to LEFT (2) ⬅️
-        If facing LEFT (2) → Turns to DOWN (1) ⬇️
-        If facing DOWN (1) → Turns to RIGHT (0) ➡️
-        '''
+        # 🎮 AI's Decision: Does the snake turn or go straight?
+        if np.array_equal(action, [1, 0, 0]):  
+            # 🚀 AI says "Go straight!" (No change)
+            new_dir = clock_wise[idx]  
 
-    # ✅ Update the new direction of the snake
-    self.direction = new_dir  
+        elif np.array_equal(action, [0, 1, 0]):  
+            # 🔄 AI says "Turn Right!"
+            next_idx = (idx + 1) % 4  # Move one step forward in clock_wise list
+            new_dir = clock_wise[next_idx]  
 
-    # 🏁 Move the snake’s head in the new direction
-    x = self.head.x  
-    y = self.head.y  
+            '''
+            🔀 Right Turn Mapping:
+            If facing RIGHT (0) → Turns to DOWN (1) ⬇️
+            If facing DOWN (1) → Turns to LEFT (2) ⬅️
+            If facing LEFT (2) → Turns to UP (3) ⬆️
+            If facing UP (3) → Turns to RIGHT (0) ➡️
+            '''
 
-    if self.direction == Direction.RIGHT:
-        x += BLOCK_SIZE  # ➡️ Move right
-    elif self.direction == Direction.LEFT:
-        x -= BLOCK_SIZE  # ⬅️ Move left
-    elif self.direction == Direction.DOWN:
-        y += BLOCK_SIZE  # ⬇️ Move down
-    elif self.direction == Direction.UP:
-        y -= BLOCK_SIZE  # ⬆️ Move up
+        else:  # [0, 0, 1]
+            # 🔄 AI says "Turn Left!"
+            next_idx = (idx - 1) % 4  # Move one step backward in clock_wise list
+            new_dir = clock_wise[next_idx]  
 
-    # 📍 Update the snake’s new head position
-    self.head = Point(x, y)
+            '''
+            🔀 Left Turn Mapping:
+            If facing RIGHT (0) → Turns to UP (3) ⬆️
+            If facing UP (3) → Turns to LEFT (2) ⬅️
+            If facing LEFT (2) → Turns to DOWN (1) ⬇️
+            If facing DOWN (1) → Turns to RIGHT (0) ➡️
+            '''
+
+        # ✅ Update the new direction of the snake
+        self.direction = new_dir  
+
+        # 🏁 Move the snake’s head in the new direction
+        x = self.head.x  
+        y = self.head.y  
+
+        if self.direction == Direction.RIGHT:
+            x += BLOCK_SIZE  # ➡️ Move right
+        elif self.direction == Direction.LEFT:
+            x -= BLOCK_SIZE  # ⬅️ Move left
+        elif self.direction == Direction.DOWN:
+            y += BLOCK_SIZE  # ⬇️ Move down
+        elif self.direction == Direction.UP:
+            y -= BLOCK_SIZE  # ⬆️ Move up
+
+        # 📍 Update the snake’s new head position
+        self.head = Point(x, y)
