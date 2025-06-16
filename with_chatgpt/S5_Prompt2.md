@@ -1,0 +1,1 @@
+I'm building a Snake game AI using Deep Q-learning, but the AI sometimes gets stuck in a loop, moving around without eating food or hitting anything. I’m not sure why this is happening. Can you help me figure out why the AI is stuck in a loop and how to fix it. Here is the SnakeGameAI class: "   "
